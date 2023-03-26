@@ -39,17 +39,45 @@ FPS = 60
 Game = True
 rocket = Player("ufo.png",50,450, 5)
 rocket2 = Player2("ufo.png",450,450, 5)
+Ball = GameSprite("asteroid.png", 250, 250, 5)
+speed_x = 3
+speed_y = 3
 
+font.init()
+font1 = font.Font(None, 35)
+lose1 = font1.render('Player 1 Loses', True, (180, 0 , 0))
+lose2 = font1.render('Player 2 Loses', True, (180, 0 , 0))
+
+finish = False
 while Game:
     for e in event.get():
         if e.type == QUIT:
             Game = False
-
+    
     window.fill(back)
     rocket.reset()
     rocket.update()
     rocket2.reset()
     rocket2.update()
+    Ball.reset()
+    if finish != True:
+        Ball.rect.x += speed_x
+        Ball.rect.y += speed_y
+    
+    if Ball.rect.y > win_height-50 or Ball.rect.y < 0:
+        speed_y *= -1
+    
+    if sprite.collide_rect(rocket, Ball) or sprite.collide_rect(rocket2, Ball):
+        speed_x *= -1
+
+    if Ball.rect.x < 0:
+        finish = True
+        window.blit(lose1, (200, 200))
+
+    if Ball.rect.x > 550:
+        finish = True
+        window.blit(lose2, (200, 200))
+    
     display.update()
     clock.tick(FPS) 
 
